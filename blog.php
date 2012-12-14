@@ -3,6 +3,7 @@ namespace traq\plugins;
 
 use avalon\http\Router;
 use avalon\Autoloader;
+use avalon\Database;
 use FishHook;
 use HTML;
 use Form;
@@ -46,12 +47,24 @@ class Blog extends \traq\libraries\Plugin
 	
 	public static function __install()
 	{
-	
+		global $db;
+
+		Database::connection()->query("CREATE TABLE IF NOT EXISTS `{$db['prefix']}blog_posts` (".
+								" `id` bigint(20) NOT NULL AUTO_INCREMENT, ".
+								" `project_id` bigint(20) NOT NULL, ".
+								" `user_id` bigint(20) NOT NULL, ".
+								" `title` varchar(255) NOT NULL, ".
+								" `created_at` datetime NOT NULL, ".
+								" `body` text COLLATE utf8_unicode_ci NOT NULL, ".
+								" PRIMARY KEY (`id`) ".
+								") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
 	}
 	
 	public static function __uninstall()
 	{
-	
+		global $db;
+		
+		Database::connection()->query("DROP TABLE `{$db['prefix']}blog_posts`;");
 	}
 }
 ?>
